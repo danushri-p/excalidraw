@@ -134,6 +134,28 @@ describe("baseline (interactive & ui enabled by default)", () => {
     expect(queryContainer(".excalidraw--non-interactive")).toBe(null);
     expect(queryContainer(".excalidraw--ui-hidden")).toBe(null);
   });
+
+  it("stylus barrel button temporarily switches to the eraser", async () => {
+    act(() => {
+      h.app.setActiveTool({ type: "selection" });
+    });
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    await waitFor(() => expect(h.state.activeTool.type).toBe("eraser"));
+
+    fireEvent.pointerUp(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    await waitFor(() => expect(h.state.activeTool.type).toBe("selection"));
+  });
 });
 
 describe("interaction={false}", () => {

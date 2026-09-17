@@ -8558,7 +8558,9 @@ class App extends React.Component<AppProps, AppState> {
     this.savePointer(event.clientX, event.clientY, "down");
 
     if (
-      event.button === POINTER_BUTTON.ERASER &&
+      (event.button === POINTER_BUTTON.ERASER ||
+        (event.pointerType === "pen" &&
+          event.button === POINTER_BUTTON.SECONDARY)) &&
       // must not switch tools while non-interactive (reachable when the
       // active tool is allowed via `interaction.enabled.tools`) or while
       // the active tool is host-controlled
