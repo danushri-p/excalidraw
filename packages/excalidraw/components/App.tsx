@@ -8571,16 +8571,21 @@ class App extends React.Component<AppProps, AppState> {
       this.setState(
         {
           activeTool: updateActiveTool(this.state, {
-            type: TOOL_TYPE.eraser,
+            type:
+              event.button === POINTER_BUTTON.ERASER
+                ? TOOL_TYPE.eraser
+                : TOOL_TYPE.freedraw,
             lastActiveTool: this.state.activeTool,
           }),
         },
         () => {
-          this.handleCanvasPointerDown(event);
+          if (event.button === POINTER_BUTTON.ERASER) {
+            this.handleCanvasPointerDown(event);
+          }
           const onPointerUp = () => {
             unsubPointerUp();
             unsubCleanup?.();
-            if (isEraserActive(this.state)) {
+            if (this.state.activeTool.lastActiveTool) {
               this.setState({
                 activeTool: updateActiveTool(this.state, {
                   ...(this.state.activeTool.lastActiveTool || {

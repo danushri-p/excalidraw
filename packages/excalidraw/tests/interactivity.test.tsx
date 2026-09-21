@@ -135,7 +135,7 @@ describe("baseline (interactive & ui enabled by default)", () => {
     expect(queryContainer(".excalidraw--ui-hidden")).toBe(null);
   });
 
-  it("stylus barrel button temporarily switches to the eraser", async () => {
+  it("stylus buttons temporarily switch to the pen and eraser", async () => {
     act(() => {
       h.app.setActiveTool({ type: "selection" });
     });
@@ -146,11 +146,27 @@ describe("baseline (interactive & ui enabled by default)", () => {
       clientX: 30,
       clientY: 30,
     });
+    await waitFor(() => expect(h.state.activeTool.type).toBe("freedraw"));
+
+    fireEvent.pointerUp(window, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    await waitFor(() => expect(h.state.activeTool.type).toBe("selection"));
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.ERASER,
+      clientX: 30,
+      clientY: 30,
+    });
     await waitFor(() => expect(h.state.activeTool.type).toBe("eraser"));
 
     fireEvent.pointerUp(GlobalTestState.interactiveCanvas, {
       pointerType: "pen",
-      button: POINTER_BUTTON.SECONDARY,
+      button: POINTER_BUTTON.ERASER,
       clientX: 30,
       clientY: 30,
     });
