@@ -1609,6 +1609,30 @@ describe("interaction={{ enabled: { tools } }}", () => {
     expect(queryContainer(".excalidraw--tools")).toBe(null);
   });
 
+  it("pen barrel button stays inert when the editor is non-interactive", async () => {
+    await renderWithInteraction({ enabled: { tools: { laser: true } } });
+
+    act(() => {
+      h.app.setActiveTool({ type: "laser" });
+    });
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    expect(h.state.activeTool.type).toBe("laser");
+
+    fireEvent.pointerUp(window, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    expect(h.state.activeTool.type).toBe("laser");
+  });
+
   it("editor is otherwise inert (keyboard, context menu, wheel, eraser button)", async () => {
     await renderWithInteraction({ enabled: { tools: { laser: true } } });
 

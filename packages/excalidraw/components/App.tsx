@@ -8557,17 +8557,20 @@ class App extends React.Component<AppProps, AppState> {
     });
     this.savePointer(event.clientX, event.clientY, "down");
 
-    if (
-      (event.button === POINTER_BUTTON.ERASER ||
-        (event.pointerType === "pen" &&
-          event.button === POINTER_BUTTON.SECONDARY)) &&
+    const isPenBarrelButton =
+      event.pointerType === "pen" &&
+      event.button === POINTER_BUTTON.SECONDARY;
+    const shouldTemporarilySwitchTool =
+      (event.button === POINTER_BUTTON.ERASER || isPenBarrelButton) &&
       // must not switch tools while non-interactive (reachable when the
       // active tool is allowed via `interaction.enabled.tools`) or while
       // the active tool is host-controlled
       this.isInteractionEnabled() &&
       !this.props.activeTool &&
-      this.state.activeTool.type !== TOOL_TYPE.eraser
-    ) {
+      this.state.activeTool.type !== TOOL_TYPE.eraser &&
+      this.state.activeTool.type !== TOOL_TYPE.freedraw;
+
+    if (shouldTemporarilySwitchTool) {
       this.setState(
         {
           activeTool: updateActiveTool(this.state, {
