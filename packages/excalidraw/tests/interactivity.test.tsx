@@ -186,7 +186,7 @@ describe("baseline (interactive & ui enabled by default)", () => {
     });
     expect(h.state.activeTool.type).toBe("freedraw");
 
-    fireEvent.pointerUp(window, {
+    fireEvent.pointerUp(GlobalTestState.interactiveCanvas, {
       pointerType: "pen",
       button: POINTER_BUTTON.SECONDARY,
       clientX: 30,
