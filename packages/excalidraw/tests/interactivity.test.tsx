@@ -172,6 +172,29 @@ describe("baseline (interactive & ui enabled by default)", () => {
     });
     await waitFor(() => expect(h.state.activeTool.type).toBe("selection"));
   });
+
+  it("does not retrigger the pen tool while it is already active", async () => {
+    act(() => {
+      h.app.setActiveTool({ type: "freedraw" });
+    });
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    expect(h.state.activeTool.type).toBe("freedraw");
+
+    fireEvent.pointerUp(window, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    expect(h.state.activeTool.type).toBe("freedraw");
+  });
+
 });
 
 describe("interaction={false}", () => {
