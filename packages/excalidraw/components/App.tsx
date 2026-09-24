@@ -8562,6 +8562,7 @@ class App extends React.Component<AppProps, AppState> {
       event.button === POINTER_BUTTON.SECONDARY;
     const shouldTemporarilySwitchTool =
       (event.button === POINTER_BUTTON.ERASER || isPenBarrelButton) &&
+      !this.state.viewModeEnabled &&
       // must not switch tools while non-interactive (reachable when the
       // active tool is allowed via `interaction.enabled.tools`) or while
       // the active tool is host-controlled

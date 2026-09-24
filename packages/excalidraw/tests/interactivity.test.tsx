@@ -1656,6 +1656,37 @@ describe("interaction={{ enabled: { tools } }}", () => {
     expect(h.state.activeTool.type).toBe("laser");
   });
 
+  it("pen barrel button stays inert in view mode", async () => {
+    await render(
+      <Excalidraw
+        viewModeEnabled={true}
+        autoFocus={true}
+        handleKeyboardGlobally={true}
+      />,
+    );
+    await waitFor(() => expect(h.state.width).toBe(200));
+
+    act(() => {
+      h.app.setActiveTool({ type: "selection" });
+    });
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    expect(h.state.activeTool.type).toBe("selection");
+
+    fireEvent.pointerUp(window, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+    expect(h.state.activeTool.type).toBe("selection");
+  });
+
   it("editor is otherwise inert (keyboard, context menu, wheel, eraser button)", async () => {
     await renderWithInteraction({ enabled: { tools: { laser: true } } });
 
