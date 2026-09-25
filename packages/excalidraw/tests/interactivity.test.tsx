@@ -173,6 +173,22 @@ describe("baseline (interactive & ui enabled by default)", () => {
     await waitFor(() => expect(h.state.activeTool.type).toBe("selection"));
   });
 
+  it("opens the context menu for a pen secondary button", () => {
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.SECONDARY,
+      clientX: 30,
+      clientY: 30,
+    });
+
+    fireEvent.contextMenu(GlobalTestState.interactiveCanvas, {
+      clientX: 30,
+      clientY: 30,
+    });
+
+    expect(h.state.contextMenu).not.toBe(null);
+  });
+
   it("does not retrigger the pen tool while it is already active", async () => {
     act(() => {
       h.app.setActiveTool({ type: "freedraw" });
