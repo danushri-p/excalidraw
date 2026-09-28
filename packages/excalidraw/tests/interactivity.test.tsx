@@ -135,26 +135,10 @@ describe("baseline (interactive & ui enabled by default)", () => {
     expect(queryContainer(".excalidraw--ui-hidden")).toBe(null);
   });
 
-  it("stylus buttons temporarily switch to the pen and eraser", async () => {
+  it("the stylus eraser button temporarily switches to eraser", async () => {
     act(() => {
       h.app.setActiveTool({ type: "selection" });
     });
-
-    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
-      pointerType: "pen",
-      button: POINTER_BUTTON.SECONDARY,
-      clientX: 30,
-      clientY: 30,
-    });
-    await waitFor(() => expect(h.state.activeTool.type).toBe("freedraw"));
-
-    fireEvent.pointerUp(window, {
-      pointerType: "pen",
-      button: POINTER_BUTTON.SECONDARY,
-      clientX: 30,
-      clientY: 30,
-    });
-    await waitFor(() => expect(h.state.activeTool.type).toBe("selection"));
 
     fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
       pointerType: "pen",
@@ -174,12 +158,17 @@ describe("baseline (interactive & ui enabled by default)", () => {
   });
 
   it("opens the context menu for a pen secondary button", () => {
+    act(() => {
+      h.app.setActiveTool({ type: "selection" });
+    });
+
     fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
       pointerType: "pen",
       button: POINTER_BUTTON.SECONDARY,
       clientX: 30,
       clientY: 30,
     });
+    expect(h.state.activeTool.type).toBe("selection");
 
     fireEvent.contextMenu(GlobalTestState.interactiveCanvas, {
       clientX: 30,
@@ -187,6 +176,7 @@ describe("baseline (interactive & ui enabled by default)", () => {
     });
 
     expect(h.state.contextMenu).not.toBe(null);
+    expect(h.state.activeTool.type).toBe("selection");
   });
 
   it("does not retrigger the pen tool while it is already active", async () => {
@@ -210,7 +200,6 @@ describe("baseline (interactive & ui enabled by default)", () => {
     });
     expect(h.state.activeTool.type).toBe("freedraw");
   });
-
 });
 
 describe("interaction={false}", () => {
