@@ -157,6 +157,28 @@ describe("baseline (interactive & ui enabled by default)", () => {
     await waitFor(() => expect(h.state.activeTool.type).toBe("selection"));
   });
 
+  it("the stylus eraser button switches from pen and restores it", async () => {
+    act(() => {
+      h.app.setActiveTool({ type: "freedraw" });
+    });
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.ERASER,
+      clientX: 30,
+      clientY: 30,
+    });
+    await waitFor(() => expect(h.state.activeTool.type).toBe("eraser"));
+
+    fireEvent.pointerUp(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.ERASER,
+      clientX: 30,
+      clientY: 30,
+    });
+    await waitFor(() => expect(h.state.activeTool.type).toBe("freedraw"));
+  });
+
   it("opens the context menu for a pen secondary button", () => {
     act(() => {
       h.app.setActiveTool({ type: "selection" });

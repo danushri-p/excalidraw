@@ -8565,8 +8565,7 @@ class App extends React.Component<AppProps, AppState> {
       // the active tool is host-controlled
       this.isInteractionEnabled() &&
       !this.props.activeTool &&
-      this.state.activeTool.type !== TOOL_TYPE.eraser &&
-      this.state.activeTool.type !== TOOL_TYPE.freedraw;
+      this.state.activeTool.type !== TOOL_TYPE.eraser;
 
     if (shouldTemporarilySwitchTool) {
       this.setState(
