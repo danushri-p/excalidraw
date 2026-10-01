@@ -1,7 +1,7 @@
 import React from "react";
 import { vi } from "vitest";
 
-import { CURSOR_TYPE, KEYS } from "@excalidraw/common";
+import { CURSOR_TYPE, KEYS, POINTER_BUTTON } from "@excalidraw/common";
 
 import { Excalidraw } from "../index";
 
@@ -101,6 +101,38 @@ describe("view mode", () => {
       customType: "comment",
     });
     expect([h.state.scrollX, h.state.scrollY]).toEqual([scrollX, scrollY]);
+  });
+
+  it("does not switch the laser tool to eraser in view mode", () => {
+    const rectangle = UI.createElement("rectangle", {
+      x: 50,
+      y: 50,
+      size: 100,
+    });
+
+    API.setAppState({ viewModeEnabled: true });
+    act(() => {
+      h.app.setActiveTool({ type: "laser" });
+    });
+
+    fireEvent.pointerDown(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.ERASER,
+      clientX: 100,
+      clientY: 100,
+    });
+    expect.soft(h.state.activeTool.type).toBe("laser");
+
+    fireEvent.pointerUp(GlobalTestState.interactiveCanvas, {
+      pointerType: "pen",
+      button: POINTER_BUTTON.ERASER,
+      clientX: 100,
+      clientY: 100,
+    });
+    expect(h.state.activeTool.type).toBe("laser");
+    expect(
+      h.elements.find((element) => element.id === rectangle.id)?.isDeleted,
+    ).toBeFalsy();
   });
 
   it("cursor should stay as grabbing type when hovering over canvas elements", async () => {
